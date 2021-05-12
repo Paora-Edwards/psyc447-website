@@ -1,0 +1,10 @@
+---
+title: "About this site"
+description: |
+  This website has been created largely out of desperation, but also out of Distill for R Markdown.
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+

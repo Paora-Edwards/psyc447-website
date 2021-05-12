@@ -1,0 +1,31 @@
+---
+title: "Paul Edwards' PSYC447 website"
+name: Paul Edwards
+description: |
+  Nau mai haere mai ki tēnei whārangi ipurangi.
+output_dir: docs
+navbar:
+  left:
+  right:
+  - text: Home
+    href: index.html
+  - text: Blog
+    href: blog.html
+  - text: About
+    href: about.html
+  - text: Profile
+    href: profile.html
+site: distill::distill_website
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+# Learn more about creating websites with Distill at:
+# https://rstudio.github.io/distill/website.html
+
+# Learn more about publishing to GitHub Pages at:
+# https://rstudio.github.io/distill/publish_website.html#github-pages
+
+```
+

@@ -1,0 +1,13 @@
+---
+title: "Paul Edwards"
+image: "pauledwards.jpg"
+links:
+  - label: GitHub
+    url: "https://github.com/Paora-Edwards"
+  - label: Email
+    url: "mailto:paul.edwards@vuw.co.nz"
+output:
+  postcards::jolla
+---
+
+Te Whakatōhea, Ngāti Porou, Ngāi Tūhoe. I am a BSc(Hons) in Psychology student at Te Herenga Waka—Victoria University of Wellington. My research interests range across all kinds of kaupapa Māori, including Māori identity and wellbeing.
