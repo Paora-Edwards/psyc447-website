@@ -1,0 +1,21 @@
+---
+title: "Journal 2"
+description: |
+  Fun and figures with R.
+author:
+  - name: Paul Edwards
+date: 03-06-21
+output:
+  distill::distill_article:
+    self_contained: false
+    fig_caption: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60), tidy=TRUE, echo = TRUE)
+```
+
+This week's content was largely revision for me, as I was familiar with most of the coding topics covered. However, I appreciated some of the packages I had not yet used before such as `sjPlot` and `Papaja`. Because of my familiarity I wanted to extend myself with a few simple tricks, such as subsetting rows from a dataframe and customising histograms. I had some issues with setting up the working directory for the `here()` function to work, and then again with pushing updated files to GitHub. After some trial and error, I managed to synch up the files correctly.
+
+I also had the opportunity to offer my limited knowledge to other students. One student had difficulty running a linear model. After some questioning, it turned out that they had used the shortcut for running a selected line (`Ctrl + Enter`) rather than the entire current chunk (`Ctrl + Shift + Enter`). They were attempting to use the `str()` function on a model object that hadn't yet been assigned. Once I showed them the difference, they were able to run the model.

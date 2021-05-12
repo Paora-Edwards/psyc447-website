@@ -6,29 +6,29 @@
       "description": "This website has been created largely out of desperation, but also out of Distill for R Markdown.",
       "author": [],
       "contents": "\r\n\r\n\r\n\r\n",
-      "last_modified": "2021-05-12T16:49:45+12:00"
-    },
-    {
-      "path": "blog.html",
-      "title": "Blog 1",
-      "author": [],
-      "contents": "\r\nR Markdown\r\nThis is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.\r\nWhen you click the Knit button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:\r\n\r\n\r\nsummary(cars)\r\n\r\n\r\n     speed           dist       \r\n Min.   : 4.0   Min.   :  2.00  \r\n 1st Qu.:12.0   1st Qu.: 26.00  \r\n Median :15.0   Median : 36.00  \r\n Mean   :15.4   Mean   : 42.98  \r\n 3rd Qu.:19.0   3rd Qu.: 56.00  \r\n Max.   :25.0   Max.   :120.00  \r\n\r\nIncluding Plots\r\nYou can also embed plots, for example:\r\n\r\n\r\n\r\nNote that the echo = FALSE parameter was added to the code chunk to prevent printing of the R code that generated the plot.\r\n\r\n\r\n\r\n",
-      "last_modified": "2021-05-12T16:49:46+12:00"
+      "last_modified": "2021-05-12T20:55:51+12:00"
     },
     {
       "path": "index.html",
-      "title": "Paul Edwards' PSYC447 website",
+      "title": "Paul Edwards PSYC447",
       "description": "Nau mai haere mai ki tēnei whārangi ipurangi.\n",
       "author": [],
       "contents": "\r\n\r\n\r\n\r\n",
-      "last_modified": "2021-05-12T16:49:48+12:00"
+      "last_modified": "2021-05-12T20:55:54+12:00"
+    },
+    {
+      "path": "journals.html",
+      "title": "Journals",
+      "author": [],
+      "contents": "\r\n\r\n\r\n\r\n",
+      "last_modified": "2021-05-12T20:55:55+12:00"
     },
     {
       "path": "profile.html",
       "title": "Paul Edwards",
       "author": [],
-      "contents": "\r\n\r\n          \r\n          \r\n          Paul Edwards' PSYC447 website\r\n          \r\n          \r\n          Home\r\n          Blog\r\n          About\r\n          Profile\r\n          ☰\r\n          \r\n          \r\n      \r\n        \r\n          \r\n            Paul Edwards\r\n          \r\n          \r\n            \r\n              Te Whakatōhea, Ngāti Porou, Ngāi Tūhoe. I am a BSc(Hons) in Psychology student at Te Herenga Waka—Victoria University of Wellington. My research interests range across all kinds of kaupapa Māori, including Māori identity and wellbeing.\r\n            \r\n            \r\n              Te Whakatōhea, Ngāti Porou, Ngāi Tūhoe. I am a BSc(Hons) in Psychology student at Te Herenga Waka—Victoria University of Wellington. My research interests range across all kinds of kaupapa Māori, including Māori identity and wellbeing.\r\n            \r\n          \r\n\r\n          \r\n            \r\n              \r\n                  \r\n                    \r\n                      GitHub\r\n                    \r\n                  \r\n                \r\n                                \r\n                  \r\n                    \r\n                      Email\r\n                    \r\n                  \r\n                \r\n                              \r\n          \r\n\r\n          \r\n            \r\n              \r\n                                \r\n                  \r\n                    GitHub\r\n                  \r\n                \r\n                                \r\n                  \r\n                    Email\r\n                  \r\n                \r\n                              \r\n            \r\n          \r\n        \r\n      \r\n    \r\n\r\n    \r\n    \r\n    ",
-      "last_modified": "2021-05-12T16:49:48+12:00"
+      "contents": "\r\n\r\n          \r\n          \r\n          \r\n          \r\n          Paul Edwards PSYC447\r\n          \r\n          \r\n          Home\r\n          Journals\r\n          \r\n          \r\n          About\r\n           \r\n          ▾\r\n          \r\n          \r\n          This website\r\n          The author\r\n          \r\n          \r\n          ☰\r\n          \r\n          \r\n      \r\n        \r\n          \r\n            Paul Edwards\r\n          \r\n          \r\n            \r\n              Te Whakatōhea, Ngāti Porou, Ngāi Tūhoe. I am a BSc(Hons) in Psychology student at Te Herenga Waka—Victoria University of Wellington. My research interests range across all kinds of kaupapa Māori, including Māori identity and wellbeing.\r\n            \r\n            \r\n              Te Whakatōhea, Ngāti Porou, Ngāi Tūhoe. I am a BSc(Hons) in Psychology student at Te Herenga Waka—Victoria University of Wellington. My research interests range across all kinds of kaupapa Māori, including Māori identity and wellbeing.\r\n            \r\n          \r\n\r\n          \r\n            \r\n              \r\n                  \r\n                    \r\n                      GitHub\r\n                    \r\n                  \r\n                \r\n                                \r\n                  \r\n                    \r\n                      Email\r\n                    \r\n                  \r\n                \r\n                              \r\n          \r\n\r\n          \r\n            \r\n              \r\n                                \r\n                  \r\n                    GitHub\r\n                  \r\n                \r\n                                \r\n                  \r\n                    Email\r\n                  \r\n                \r\n                              \r\n            \r\n          \r\n        \r\n      \r\n    \r\n\r\n    \r\n    \r\n    ",
+      "last_modified": "2021-05-12T20:55:55+12:00"
     }
   ],
   "collections": ["posts/posts.json"]

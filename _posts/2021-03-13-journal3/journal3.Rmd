@@ -1,0 +1,21 @@
+---
+title: "Journal 3"
+description: |
+  Plotting to overthow the world with R.
+author:
+  - name: Paul Edwards
+date: 03-13-21
+output:
+  distill::distill_article:
+    self_contained: false
+    fig_caption: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60), tidy=TRUE, echo = TRUE)
+```
+
+Joe commented this week that some of the data visualisation techniques might be too easy for those of us who have experience in using R. However, I take this as a personal challenge to extend myself where I can. I noticed several formatting issues when completing the workbook assessment, so I have tried to address these with functions such as `str_wrap()` to prevent the plot titles from running off the page, or `scale_shape_manual()` to account for more than 6 classes in the scatterplot. I also set chunk options to prevent annoying default warning messages from appearing. I would have liked to increase the height of some of the plots using the `ggsave()` function but wasn't sure whether I needed to call the saved plot and how.
+
+I assisted Cam with an unexpected result in Question 2. Whereas I had faceted my plot by year of manufacture, he had set the colour for each class of the `year` variable in an unfaceted plot. Although this would theoretically work, he found that the graph displayed a legend with a colour-continuum across 1998-2004 including years between. After we puzzled together, I thought perhaps the column had been set as numerical rather than as a factor which would account for the continuous colour-coding. Using `as.factor(year)` resolved the issue.

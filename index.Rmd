@@ -1,20 +1,25 @@
 ---
-title: "Paul Edwards' PSYC447 website"
+title: "Paul Edwards PSYC447"
 name: Paul Edwards
 description: |
   Nau mai haere mai ki tēnei whārangi ipurangi.
 output_dir: docs
 navbar:
+  logo:
+    image: opotiki.jpg
+  search: FALSE
   left:
   right:
-  - text: Home
+  - text: "Home"
     href: index.html
-  - text: Blog
-    href: blog.html
-  - text: About
-    href: about.html
-  - text: Profile
-    href: profile.html
+  - text: "Journals"
+    href: journals.html
+  - text: "About"
+    menu:
+        - text: "This website"
+          href: about.html
+        - text: "The author"
+          href: profile.html
 site: distill::distill_website
 ---
 

@@ -1,0 +1,13 @@
+---
+title: "Journals"
+site: distill::distill_website
+listing:
+  posts:
+    - 2021-02-21-journal1
+    - 2021-03-06-journal2
+    - 2021-03-13-journal3
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```

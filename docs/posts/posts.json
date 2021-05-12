@@ -1,19 +1,53 @@
 [
   {
-    "path": "posts/2021-05-12-welcome/",
-    "title": "welcome",
-    "description": "A short description of the post.",
+    "path": "posts/2021-02-21-journal1/",
+    "title": "Journal 1",
+    "description": "Getting started with R, RStudio and RMarkdown.",
     "author": [
       {
-        "name": "Unknown",
+        "name": "Paul Edwards",
         "url": {}
       }
     ],
-    "date": "2021-05-12",
+    "date": "2025-02-21",
     "categories": [],
-    "contents": "\r\nDistill is a publication format for scientific and technical writing, native to the web.\r\nLearn more about using Distill at https://rstudio.github.io/distill.\r\n\r\n\r\n\r\n",
+    "contents": "\r\nGive a fish, teach to fish\r\nSetting up a GitHub-enabled version control project in RStudio was initially frustrating, like many coding experiences before it. The instructions provided by Joe and Johannes seemed deceptively simple. I have come to understand that this is a general principle in coding pedagogy; “Give a [person] a fish and you feed [them] for a day. Teach a [person] to fish and you feed [them] for a lifetime.”\r\nDespite the frustration, being forced to fill in the gaps between instructions enabled me to have a better understanding than if it had been laid out exactingly. After downloading Git and being unable to find the .exe file, Johannes helpfully pointed out that I had not followed the sacred code of the helpdesk technician: “Have you tried turning it on and off again?” Rather shamefacedly I managed to link my repository.\r\nAnother issue was creating an SSH key which I had not done before. The GitHub guide was not overly helpful in advising me to copy the public SSH key I’d created in Git Bash, for the simple reason that it did not identify what file the key was saved to, nor what character length the key should resemble. Some quick Googling and scanning Stack Overflow revealed the answer, to great relief. Unfortunately I have not yet had the opportunity to return the favour and feed the multitude with my own paltry offerings of bread and fish knowledge, despite having the fervour of a pseudo-religious convert to these coding development tools.\r\nMore generally, I am excited for what this course is intended to prepare us with. The ability to conduct advanced data analytic techniques with today’s home computing power is unprecedented, leading to new ways of open collaboration. The power of quantitative research is illustrated in the collapse of Northern Cod stocks in Atlantic Canada in the 1990s (see Figure 1).\r\n\r\nCollapse of Atlantic Cod Stocks off the East Coast of Newfoundland in 1992 (Millennium Ecosystem Assessment, 2005)\r\nThe population size at the time is argued to have been overestimated due to modelling of catch rate data from modern vessels equipped with vastly superior technology than in previous decades (Hutchings & Myers, 1994). The resulting sample error from abundant harvests led to overconfidence that fishery stocks were plentiful when in fact they were at dangerously low levels. The ego has been a fatality both for the human self and for Cod.1\r\n\r\n\r\n\r\nHutchings, J. A., & Myers, R. A. (1994). What can be learned from the collapse of a renewable resource? Atlantic cod, gadus morhua, of newfoundland and labrador. Canadian Journal of Fisheries and Aquatic Sciences, 51(9), 2126–2146.\r\n\r\n\r\nMillennium Ecosystem Assessment. (2005). Ecosystems and human well-being: synthesis. Washington, DC: Island Press.\r\n\r\n\r\nThis was once revealed to me in a bream.↩︎\r\n",
     "preview": {},
-    "last_modified": "2021-05-12T16:38:10+12:00",
+    "last_modified": "2021-05-12T20:42:45+12:00",
+    "input_file": {}
+  },
+  {
+    "path": "posts/2021-03-13-journal3/",
+    "title": "Journal 3",
+    "description": "Plotting to overthow the world with R.",
+    "author": [
+      {
+        "name": "Paul Edwards",
+        "url": {}
+      }
+    ],
+    "date": "2021-03-13",
+    "categories": [],
+    "contents": "\r\nJoe commented this week that some of the data visualisation techniques might be too easy for those of us who have experience in using R. However, I take this as a personal challenge to extend myself where I can. I noticed several formatting issues when completing the workbook assessment, so I have tried to address these with functions such as str_wrap() to prevent the plot titles from running off the page, or scale_shape_manual() to account for more than 6 classes in the scatterplot. I also set chunk options to prevent annoying default warning messages from appearing. I would have liked to increase the height of some of the plots using the ggsave() function but wasn’t sure whether I needed to call the saved plot and how.\r\nI assisted Cam with an unexpected result in Question 2. Whereas I had faceted my plot by year of manufacture, he had set the colour for each class of the year variable in an unfaceted plot. Although this would theoretically work, he found that the graph displayed a legend with a colour-continuum across 1998-2004 including years between. After we puzzled together, I thought perhaps the column had been set as numerical rather than as a factor which would account for the continuous colour-coding. Using as.factor(year) resolved the issue.\r\n\r\n\r\n\r\n",
+    "preview": {},
+    "last_modified": "2021-05-12T20:55:23+12:00",
+    "input_file": {}
+  },
+  {
+    "path": "posts/2021-03-06-journal2/",
+    "title": "Journal 2",
+    "description": "Fun and figures with R.",
+    "author": [
+      {
+        "name": "Paul Edwards",
+        "url": {}
+      }
+    ],
+    "date": "2021-03-06",
+    "categories": [],
+    "contents": "\r\nThis week’s content was largely revision for me, as I was familiar with most of the coding topics covered. However, I appreciated some of the packages I had not yet used before such as sjPlot and Papaja. Because of my familiarity I wanted to extend myself with a few simple tricks, such as subsetting rows from a dataframe and customising histograms. I had some issues with setting up the working directory for the here() function to work, and then again with pushing updated files to GitHub. After some trial and error, I managed to synch up the files correctly.\r\nI also had the opportunity to offer my limited knowledge to other students. One student had difficulty running a linear model. After some questioning, it turned out that they had used the shortcut for running a selected line (Ctrl + Enter) rather than the entire current chunk (Ctrl + Shift + Enter). They were attempting to use the str() function on a model object that hadn’t yet been assigned. Once I showed them the difference, they were able to run the model.\r\n\r\n\r\n\r\n",
+    "preview": {},
+    "last_modified": "2021-05-12T20:51:23+12:00",
     "input_file": {}
   }
 ]
