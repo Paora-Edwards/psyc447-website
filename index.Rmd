@@ -33,6 +33,10 @@ site: distill::distill_website
 
 ```{r setup, echo=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 2c11776505a511d192e6a1058ee3c8f6554fcf08
 library(knitr)
 ```
 
@@ -41,4 +45,9 @@ My current research:
 ```{r}
 image1 <- knitr::include_graphics("images/surveyposter.jpg")
 image1
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 4ed5ece9bf9beffbe7b3d86fd0319125a70e33f4
+>>>>>>> 2c11776505a511d192e6a1058ee3c8f6554fcf08
 ```
