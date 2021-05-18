@@ -12,9 +12,15 @@ navbar:
   right:
   - text: Home
     href: index.html
+<<<<<<< HEAD
   - text: Projects
     href: projects.html
   - text: Journals
+=======
+  - text: "Projects"
+    href: projects.html    
+  - text: "Journals"
+>>>>>>> 4ed5ece9bf9beffbe7b3d86fd0319125a70e33f4
     href: journals.html
   - text: About
     menu:
@@ -27,6 +33,7 @@ site: distill::distill_website
 
 ```{r setup, echo=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+<<<<<<< HEAD
 library(knitr)
 ```
 
@@ -35,4 +42,6 @@ My current research:
 ```{r}
 image1 <- knitr::include_graphics("images/surveyposter.jpg")
 image1
+=======
+>>>>>>> 4ed5ece9bf9beffbe7b3d86fd0319125a70e33f4
 ```
