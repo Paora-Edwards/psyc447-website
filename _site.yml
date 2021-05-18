@@ -1,7 +1,7 @@
 title: "Paul Edwards PSYC447"
 name: Paul Edwards
 description: |
-  Nau mai haere mai ki tēnei whārangi ipurangi.
+  Nau mai haere mai ki tenei wharangi ipurangi.
 output_dir: docs
 navbar:
   logo:
@@ -11,6 +11,8 @@ navbar:
   right:
   - text: "Home"
     href: index.html
+  - text: "Projects"
+    href: projects.html  
   - text: "Journals"
     href: journals.html
   - text: "About"
