@@ -1,0 +1,185 @@
+---
+title: "Workbook 10"
+description: |
+  Mixed models: Random slopes and intercepts.
+author:
+  - name: Paul Edwards
+date: 05-18-21
+output:
+  distill::distill_article:
+    self_contained: false
+    fig_caption: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  layout = "l-body-outset",
+  fig.width= 12,
+  fig.height= 10,
+  collapse =TRUE,
+  R.options = list(width = 60)
+)
+
+library("tidyverse")
+library("patchwork")
+library("lubridate")
+library("kableExtra")
+library("gtsummary")
+library("lubridate")
+library("equatiomatic")
+library("lme4")
+library("ggdag")
+library("brms")
+library("rstan")
+library("rstanarm")
+library("bayesplot")
+library("kableExtra")
+library("broom")
+library("tidybayes")
+library("bmlm")
+# if (!require(tidyLPA)) {
+#   install.packages("tidyLPA")
+# }
+# rstan options
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores ())
+theme_set(theme_classic())
+
+#Read data
+nz_0 <- as.data.frame(readr::read_csv2(
+  url(
+    "https://raw.githubusercontent.com/go-bayes/psych-447/main/data/nzj.csv"
+  )
+))
+
+#Re-level Kessler 6 variables
+f <- c(
+    "None Of The Time",
+    "A Little Of The Time",
+    "Some Of The Time",
+    "Most Of The Time",
+    "All Of The Time"
+  )
+
+#Re-shape data
+nz_1 <- nz_0 %>%
+  dplyr::mutate_if(is.character, factor) %>%
+  select(
+    -c(
+      SWB.Kessler01,
+      SWB.Kessler02,
+      SWB.Kessler03,
+      SWB.Kessler04,
+      SWB.Kessler05,
+      SWB.Kessler06
+    )
+  ) %>%
+  dplyr::mutate(Wave = as.factor(Wave)) %>%
+  dplyr::mutate(FeelHopeless = forcats::fct_relevel(FeelHopeless, f)) %>%
+  dplyr::mutate(FeelDepressed = forcats::fct_relevel(FeelDepressed, f)) %>%
+  dplyr::mutate(FeelRestless = forcats::fct_relevel(FeelRestless, f)) %>%
+  dplyr::mutate(EverythingIsEffort = forcats::fct_relevel(EverythingIsEffort, f)) %>%
+  dplyr::mutate(FeelWorthless = forcats::fct_relevel(FeelWorthless, f)) %>%
+  dplyr::mutate(FeelNervous = forcats::fct_relevel(FeelNervous, f)) %>%
+  dplyr::mutate(Wave = as.factor(Wave)) %>%
+  dplyr::mutate(male_id = as.factor(Male)) %>%
+  dplyr::mutate(date = make_date(year = 2009, month = 6, day = 30) + TSCORE) %>%
+  dplyr::mutate(
+    FeelWorthless_int = as.integer(FeelWorthless),
+    FeelNervous_int = as.integer(FeelNervous),
+    FeelHopeless_int = as.integer(FeelHopeless),
+    EverythingIsEffort_int = as.integer(EverythingIsEffort),
+    FeelRestless_int = as.integer(FeelRestless),
+    FeelDepressed_int = as.integer(FeelDepressed),
+    HLTH.Fatigue_int = as.integer(HLTH.Fatigue + 1)
+  ) %>%
+  dplyr::mutate(yearS = TSCORE - min(TSCORE, na.rm = TRUE)) %>%
+  dplyr::mutate(KESSLER6sum = as.integer(KESSLER6sum))
+```
+
+## Workbook 10
+
+Here we will examine a varying intercept and slope model examining the effect of perceived future security on psychological distress, within each generational cohort. We will start by conducting a generalized linear mixed model.
+
+```{r}
+#Run linear model with correlated random slope and intercept
+mod1 <- lme4::lmer(KESSLER6sum ~ Your.Future.Security + (Your.Future.Security|GenCohort), data=nz_1)
+stats1 <- parameters::model_parameters(mod1)
+
+#Display model table
+tab1 <- sjPlot::tab_model(mod1)
+tab1
+```
+
+Here, the linear model has an intercept of `r round(stats1[1,2], digits = 2)` which indicates the expected psychological distress score when perceived future security is set to zero.
+
+Perceived future security is an important predictor of psychological distress (beta = `r round(stats1[2,2], digits = 2)`, 95% CI [`r round(stats1[2,5], digits = 2)`, `r round(stats1[2,6], digits = 2)`], *p* `r scales::pvalue(stats1[2,9])`). Those with higher perceived future security report less psychological distress, which intuitively seems appropriate.
+
+Interestingly, the conditional `R^2` value is higher than the marginal `R^2` which indicates that the variance explained by the combination of fixed and random effects is greater than that explained by the fixed effects alone. Therefore, the random effect of generational cohort is an important factor to consider. We will examine this further by graphing the data.
+
+```{r}
+#Plot model
+plot1 <- ggplot2::ggplot(data = nz_1,
+                aes(x = Your.Future.Security,
+                    y = KESSLER6sum,
+                    colour = GenCohort
+                    ), na.rm = TRUE) +
+  geom_point() +
+  geom_smooth(method = "lm")
+plot1
+```
+
+This graph shows a clear difference in the intercepts between generation cohorts. Each successive generation appears to have a greater level of psychological distress than the one previous, when future security is set to zero. We can also see that the rate of change (i.e. slope) between psychological distress and future security seems to be steeper for Gen Z-ers and shallower for members of the Silent Generation, compared to the generations in-between. Stereotypes abound regarding the silent generation's stoicism versus Zoomers' emotional fragility/reactivity. Of course, this model does not take into account other factors which may be confounding this relationship such as material conditions of hardship; age and maturity; income, accumulated wealth and job security; each of which may be decreasing across generations.
+
+For fun, we will also run a Bayesian model of the same parameters, with no priors.
+
+```{r}
+#Run Bayesian model with correlated random slope and intercept
+#mod2 <- brm(KESSLER6sum ~ Your.Future.Security + (Your.Future.Security|GenCohort),
+#            file = here::here("data", "multilevel-var-slopes-no-prior"),
+#            data = nz_1,
+#            family = gaussian
+#            )
+mod2 <- readRDS("../data/multilevel-var-slopes-no-prior.rds")
+
+#Display model table
+tab2 <- sjPlot::tab_model(mod2)
+tab2
+```
+
+The results are quite similar.
+
+```{r}
+#Plot model
+plot2 <- brms::mcmc_plot(mod2, 
+               type = "areas",
+               prob = .89)
+plot2
+
+#Plot model
+plot3 <- bayesplot::mcmc_intervals(mod2, 
+              regex_pars  = c("r_","b_"))
+plot3
+```
+
+There is group-level variability in psychological distress, as shown by the gradient in scores. We can generate expectation plots for the groups to further explain the relationship.
+
+```{r}
+#Calculate uncertainty of the posterior distribution
+pp <- posterior_predict(mod2)
+
+#Plot predicted values with posterior distribution
+plot4 <- plot(
+  ggeffects::ggpredict(mod2, 
+                       terms = c("Your.Future.Security","GenCohort"),
+                       type = "random"),
+  add.data = pp
+)
+plot4
+```
+
+As previously suggested, perceived future security predicts less psychological distress but successive generations have increased distress.

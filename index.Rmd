@@ -7,30 +7,32 @@ output_dir: docs
 navbar:
   logo:
     image: opotiki.jpg
-  search: FALSE
-  left:
+  search: no
+  left: null
   right:
-  - text: "Home"
+  - text: Home
     href: index.html
-  - text: "Journals"
+  - text: Projects
+    href: projects.html
+  - text: Journals
     href: journals.html
-  - text: "About"
+  - text: About
     menu:
-        - text: "This website"
-          href: about.html
-        - text: "The author"
-          href: profile.html
+    - text: This website
+      href: about.html
+    - text: The author
+      href: profile.html
 site: distill::distill_website
 ---
 
-```{r setup, include=FALSE}
+```{r setup, echo=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
-
-# Learn more about creating websites with Distill at:
-# https://rstudio.github.io/distill/website.html
-
-# Learn more about publishing to GitHub Pages at:
-# https://rstudio.github.io/distill/publish_website.html#github-pages
-
+library(knitr)
 ```
 
+My current research:
+
+```{r}
+image1 <- knitr::include_graphics("images/surveyposter.jpg")
+image1
+```
