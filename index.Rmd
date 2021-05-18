@@ -12,9 +12,15 @@ navbar:
   right:
   - text: Home
     href: index.html
+<<<<<<< HEAD
   - text: Projects
     href: projects.html
   - text: Journals
+=======
+  - text: "Projects"
+    href: projects.html    
+  - text: "Journals"
+>>>>>>> 4ed5ece9bf9beffbe7b3d86fd0319125a70e33f4
     href: journals.html
   - text: About
     menu:
