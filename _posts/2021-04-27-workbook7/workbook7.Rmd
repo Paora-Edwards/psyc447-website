@@ -1,0 +1,220 @@
+---
+title: "Workbook 7"
+description: |
+  Multiple regression
+author:
+  - name: Paul Edwards
+date: 04-27-21
+output:
+  distill::distill_article:
+    self_contained: false
+    fig_caption: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library("tidyverse")
+library("patchwork")
+library("lubridate")
+library("kableExtra")
+library("gtsummary")
+library("lubridate")
+library("reshape2")
+library("ggraph")
+library("correlation")
+library("ggeffects")
+library("tidyLPA")
+
+#Read data
+nz_0 <- as.data.frame(readr::read_csv2(
+  url(
+    "https://raw.githubusercontent.com/go-bayes/psych-447/main/data/nzj.csv"
+  )
+))
+
+#Re-level Kessler 6 variables
+f <-  c("None Of The Time",
+        "A Little Of The Time",
+        "Some Of The Time",
+        "Most Of The Time",
+        "All Of The Time"
+      )
+
+#Re-shape data
+nz_1 <- nz_0 %>%
+  dplyr::mutate_if(is.character, factor) %>%
+  select(
+    -c(SWB.Kessler01,
+       SWB.Kessler02,
+       SWB.Kessler03,
+       SWB.Kessler04,
+       SWB.Kessler05,
+       SWB.Kessler06
+      )
+  ) %>%
+  dplyr::mutate(Wave = as.factor(Wave)) %>%
+  mutate(FeelHopeless = forcats::fct_relevel(FeelHopeless, f)) %>%
+  mutate(FeelDepressed = forcats::fct_relevel(FeelDepressed, f)) %>%
+  mutate(FeelRestless = forcats::fct_relevel(FeelRestless, f)) %>%
+  mutate(EverythingIsEffort = forcats::fct_relevel(EverythingIsEffort, f)) %>%
+  mutate(FeelWorthless = forcats::fct_relevel(FeelWorthless, f)) %>%
+  mutate(FeelNervous = forcats::fct_relevel(FeelNervous, f)) %>%
+  dplyr::mutate(Wave = as.factor(Wave)) %>%
+  dplyr::mutate(male_id = as.factor(Male)) %>%
+  dplyr::mutate(date = make_date(year = 2009, month = 6, day = 30) + TSCORE) %>%
+  dplyr::filter(Wave == 2019) %>%
+  dplyr::mutate(NZ.Economic.Situation.c = as.numeric(scale(NZ.Economic.Situation, center = TRUE, scale = FALSE))) %>%
+  dplyr::mutate(Your.Future.Security.c = as.numeric(scale(Your.Future.Security, center = TRUE, scale = FALSE)))
+```
+
+I have chosen to examine five variables relating to psychological distress and micro-/macro-level economic security variables from Wave 11 (2019) of the NZ Attitudes and Values Survey (NZAVS).
+
+```{r}
+#Create tibble of variable means and standard deviations
+stats1 <- nz_1 %>%
+  select(KESSLER6sum,
+         NZ.Business.Conditions,
+         NZ.Economic.Situation,
+         Your.Future.Security,
+         Emp.JobSecure
+         ) %>%
+  summarise(
+    round(
+      rbind(
+        across(c(KESSLER6sum,
+                 NZ.Business.Conditions,
+                 NZ.Economic.Situation,
+                 Your.Future.Security,
+                 Emp.JobSecure
+                 ), ~mean(.x, na.rm = TRUE)
+               ),
+        across(c(KESSLER6sum,
+                 NZ.Business.Conditions,
+                 NZ.Economic.Situation,
+                 Your.Future.Security,
+                 Emp.JobSecure
+                 ), ~sd(.x, na.rm = TRUE)
+               )
+        ), digits = 2)
+    )
+
+#Create table to store variable means and standard deviations
+tab1 <- t(stats1) %>%
+  kbl(caption = "Psychological distress and economic security variables in the NZAVS 2019 wave",
+      col.names = c("M",
+                    "SD"),
+      align = c("r", "r")
+      ) %>%
+  kable_classic_2(c("striped", "hover"), full_width = TRUE)
+tab1
+
+#Create density plots of variables
+nz_2 <- nz_1 %>%
+  select(KESSLER6sum,
+         NZ.Business.Conditions,
+         NZ.Economic.Situation,
+         Your.Future.Security,
+         Emp.JobSecure
+         ) %>%
+  melt()
+plot1 <- ggplot(data = nz_2, aes(x = value, color = variable, fill = variable)) + 
+  geom_density(alpha = 0.7) +
+  facet_wrap(~ variable, nrow = 2) +
+  labs(title = str_wrap("Density plots of psychological distress and economic security variables in NZAVS 2019 wave", 60)) +
+  ylab("Density") +
+  xlab("Variable") +
+  theme(plot.title = element_text(size=14),
+        axis.text.x = element_text(angle = 20, hjust = 1),
+        legend.position = "none"
+  )
+plot1
+
+#Create correlation plot of variables
+extrafont::loadfonts()
+plot2 <- nz_1 %>%
+  select(KESSLER6sum,
+         NZ.Business.Conditions,
+         NZ.Economic.Situation,
+         Your.Future.Security,
+         Emp.JobSecure
+         ) %>%
+  correlation(partial = FALSE, multilevel = FALSE) %>%
+  plot()
+plot2
+```
+
+Psychological distress was measured using the Kessler 6. The six items contribute to a total possible score of 24, however the average amongst the general NZ population is relatively low (*M* = `r stats1$KESSLER6sum[1]`, *SD* = `r stats1$KESSLER6sum[2]`). The density plot shows a platykurtic distribution with positive skew, indicating the bulk of scores were low but with a few high-scoring individuals.
+
+Personal and national economic wellbeing factors were measured on a scale from 0 ("Completely Dissatisfied") to 10 ("Completely Satisfied"). Satisfaction with NZ business conditions (*M* = `r stats1$NZ.Business.Conditions[1]`, *SD* = `r stats1$NZ.Business.Conditions[2]`), the NZ economy (*M* = `r stats1$NZ.Economic.Situation[1]`, *SD* = `r stats1$NZ.Economic.Situation[2]`) and perceived future security (*M* = `r stats1$Your.Future.Security[1]`, *SD* = `r stats1$Your.Future.Security[2]`) were relatively mid-range. Density plots show reasonably similar distributions.
+
+Perceived job security was measured on a scale from 1 ("Not secure") to 7 ("Very secure") with slightly higher average responses (*M* = `r stats1$Emp.JobSecure[1]`, *SD* = `r stats1$Emp.JobSecure[2]`). The density plot shows a leptokurtic distribution with negative skew.
+
+A correlation plot shows that all four economic security variables are positively correlated with each other, with perceived job security having the weakest correlation. Psychological distress was negatively correlated with the four economic security variables indicating that as perceived economic security increases, distress decreases.
+
+```{r}
+#Run linear model with one predictor
+mod1 <- lm(KESSLER6sum ~ NZ.Economic.Situation.c, data = nz_1)
+tab2 <- parameters::model_parameters(mod1)
+print_md(tab2)
+
+#Plot linear model
+plot3 <- plot(ggeffects::ggpredict(mod1,
+                                   terms = "NZ.Economic.Situation.c"
+                                   ),
+              add.data = TRUE,
+              jitter = 0.2,
+              dot.alpha =.2,
+              ) +
+  scale_x_continuous(limits = c(-5, 5)) +
+  scale_y_continuous(limits = c(0, 7)) +
+  theme_classic()
+plot3
+
+#Write model equation with coefficients
+eq1 <- equatiomatic::extract_eq(mod1,  use_coefs = TRUE)
+eq1
+```
+
+Here, the linear model `r eq1` has an intercept of `r round(tab2[1,2], digits = 2)` which indicates the expected score when satisfaction with the NZ economy is the average score.
+
+Satisfaction with the NZ economy is an important predictor of psychological distress (beta = `r round(tab2[2,2], digits = 2)`, 95% CI = `r round(tab2[2,4], digits = 2)`, *p* `r scales::pvalue(tab2[2,6])`).
+
+```{r}
+#Run linear model with two predictors
+mod2 <- lm(KESSLER6sum ~ NZ.Economic.Situation.c + Your.Future.Security.c, data = nz_1)
+tab3 <- parameters::model_parameters(mod2)
+print_md(tab3)
+
+#Plot linear model
+plot4 <- plot(ggeffects::ggpredict(mod2,
+                                   terms = c("NZ.Economic.Situation.c",
+                                             "Your.Future.Security.c")
+                                   ),
+              add.data = TRUE,
+              jitter = 0.2,
+              dot.alpha =.2,
+              ) +
+  scale_x_continuous(limits = c(-5, 5)) +
+  scale_y_continuous(limits = c(0, 7)) +
+  theme_classic()
+plot4
+
+#Write model equation with coefficients
+eq2 <- equatiomatic::extract_eq(mod2,  use_coefs = TRUE)
+eq2
+```
+
+Here, the linear model `r eq2` has an intercept of `r round(tab3[1,2], digits = 2)` which indicates the expected score when satisfaction with the NZ economy is the average score.
+
+Satisfaction with the NZ economy is no longer an important predictor of psychological distress (beta = `r round(tab3[2,2], digits = 2)`, 95% CI = `r round(tab3[2,4], digits = 2)`, *p* `r scales::pvalue(tab3[2,6])`) as its explanatory power is obscured by perceived future security (beta = `r round(tab3[3,2], digits = 2)`, 95% CI = `r round(tab3[3,4], digits = 2)`, *p* `r scales::pvalue(tab3[3,6])`).
+
+```{r}
+#Compare models
+modcomp <- performance::compare_performance(mod1,mod2)
+modcomp
+plot(modcomp)
+```
+
+Comparing the two models, the second model with two predictors appears to be the better fit for the data. AIC, BIC and RMSE both decreased for the second model, while the R`^2` value increased. Inclusion of perceived future security is therefore a better predictor of psychological distress than satisfaction with the NZ economy alone.

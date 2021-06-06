@@ -1,0 +1,120 @@
+---
+title: "Workbook 9"
+description: |
+  Ordinal, cluster, multivariate and mediation models
+author:
+  - name: Paul Edwards
+date: 05-11-21
+output:
+  distill::distill_article:
+    self_contained: false
+    fig_caption: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library("tidyverse")
+library("patchwork")
+library("lubridate")
+library("kableExtra")
+library("gtsummary")
+library("lubridate")
+library("equatiomatic")
+library("ggdag")
+library("brms")
+library("rstan")
+library("rstanarm")
+library("bayesplot")
+library("kableExtra")
+library("broom")
+library("tidybayes")
+library("bmlm")
+library("tidyLPA")
+
+# rstan options
+rstan_options(auto_write = TRUE)
+options(mc.cores = parallel::detectCores ())
+theme_set(theme_classic())
+
+#Read data
+nz_0 <- as.data.frame(readr::read_csv2(
+  url(
+    "https://raw.githubusercontent.com/go-bayes/psych-447/main/data/nzj.csv"
+  )
+))
+
+#Re-level Kessler 6 variables
+f <- c(
+    "None Of The Time",
+    "A Little Of The Time",
+    "Some Of The Time",
+    "Most Of The Time",
+    "All Of The Time"
+  )
+
+#Re-shape data
+nz_1 <- nz_0 %>%
+  dplyr::mutate_if(is.character, factor) %>%
+  select(
+    -c(
+      SWB.Kessler01,
+      SWB.Kessler02,
+      SWB.Kessler03,
+      SWB.Kessler04,
+      SWB.Kessler05,
+      SWB.Kessler06
+    )
+  ) %>%
+  dplyr::mutate(Wave = as.factor(Wave)) %>%
+  dplyr::mutate(FeelHopeless = forcats::fct_relevel(FeelHopeless, f)) %>%
+  dplyr::mutate(FeelDepressed = forcats::fct_relevel(FeelDepressed, f)) %>%
+  dplyr::mutate(FeelRestless = forcats::fct_relevel(FeelRestless, f)) %>%
+  dplyr::mutate(EverythingIsEffort = forcats::fct_relevel(EverythingIsEffort, f)) %>%
+  dplyr::mutate(FeelWorthless = forcats::fct_relevel(FeelWorthless, f)) %>%
+  dplyr::mutate(FeelNervous = forcats::fct_relevel(FeelNervous, f)) %>%
+  dplyr::mutate(Wave = as.factor(Wave)) %>%
+  dplyr::mutate(male_id = as.factor(Male)) %>%
+  dplyr::mutate(date = make_date(year = 2009, month = 6, day = 30) + TSCORE) %>%
+  dplyr::mutate(
+    FeelWorthless_int = as.integer(FeelWorthless),
+    FeelNervous_int = as.integer(FeelNervous),
+    FeelHopeless_int = as.integer(FeelHopeless),
+    EverythingIsEffort_int = as.integer(EverythingIsEffort),
+    FeelRestless_int = as.integer(FeelRestless),
+    FeelDepressed_int = as.integer(FeelDepressed),
+    HLTH.Fatigue_int = as.integer(HLTH.Fatigue + 1)
+  ) %>%
+  dplyr::mutate(yearS = TSCORE - min(TSCORE, na.rm = TRUE)) %>%
+  dplyr::mutate(KESSLER6sum = as.integer(KESSLER6sum))
+
+#Filter 2018-only data
+nz2018 <- nz_1 %>%
+  dplyr::filter(Wave == 2018)
+
+#Re-shape 2018-only data
+nz2018['Issue.GovtSurveillance_s'] <- as.data.frame(log(nz2018$Issue.GovtSurveillance + 1))
+nz2018['Issue.RegulateAI_s'] <- as.data.frame(log(nz2018$Issue.RegulateAI + 1))
+nz2018['Pol.Orient_s'] <- as.data.frame(scale(nz2018$Pol.Orient))
+nz2018['PATRIOT_s'] <- as.data.frame(scale(nz2018$PATRIOT))
+```
+
+Here we will estimate a range of demographic and ideological predictors of attitudes to government surveillance and attitudes to regulate AI in New Zealand in 2018. The particular predictors we have selected include gender, political orientation and patriotism. We will begin by running the Bayesian multivariate model.
+
+```{r}
+#Run Bayesian multivariate regression model
+#brm(
+#  mvbind(Issue.GovtSurveillance, Issue.RegulateAI) ~ Gender + Pol.Orient + PATRIOT,
+#  data = nz2018,
+#  file = here::here("data", "multivariate_issues"), 
+#)
+mod1 <- readRDS("multivariate_issues.rds")
+summary(mod1)
+
+#Plot model
+brms::mcmc_plot(mod1,
+               type = "areas",
+               prob = .89)
+```
+

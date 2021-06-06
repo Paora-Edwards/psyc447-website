@@ -1,0 +1,206 @@
+---
+title: "Workbook 2"
+description: |
+  Fun and figures with R
+author:
+  - name: Paul Edwards
+date: 03-06-21
+output:
+  distill::distill_article:
+    self_contained: false
+    fig_caption: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+1.
+```{r}
+#Mathematical calculations
+1+1
+
+2-2
+
+3*3
+
+4/4
+
+(5^5)^5
+
+(6^6)^-6
+
+7^-7
+
+8.8*8.8
+
+99+(9/9)
+
+go_factorial <- function(x) {
+  y <- 1
+  for (i in 1:x) {
+    y <- y * ((1:x)[i])
+  }
+  print(y)
+}
+go_factorial(10)
+```
+
+2.
+```{r}
+#Square root function
+sqrt(324)
+```
+
+3.
+```{r}
+#Find row with max sepal length and subset dataframe
+maxSL <- which.max(iris$Sepal.Length)
+iris[maxSL,]
+```
+
+4.
+```{r}
+#Find row with min sepal length and subset dataframe
+minSL <- which.min(iris$Sepal.Length)
+iris[minSL,]
+```
+
+5.
+```{r}
+#Calculate range between maximum and minimum sepal length
+rangeSL <- max(iris$Sepal.Length)-min(iris$Sepal.Length)
+rangeSL
+```
+
+6.
+```{r}
+#Construct dataframe with 7 columns and 100 randomly generated rows
+df1 <- data.frame(
+  a = runif(100),
+  b = runif(100),
+  c = runif(100),
+  d = runif(100),
+  e = runif(100),
+  f = runif(100),
+  g = runif(100)
+)
+str(df1)
+```
+
+7.
+```{r}
+#Copy dataframe and rename columns
+df2 <- df1
+names(df2)[] <- c("Doc","Grumpy","Happy","Sleepy","Bashful","Sneezy","Dopey")
+head(df2)
+```
+
+8.
+```{r}
+#Run linear regression model of height by weight
+mod1 <- lm(height ~ weight, data = women)
+summary(mod1)
+```
+
+9.
+```{r}
+#Display model results in a table
+sjPlot::tab_model(mod1)
+#Display model results in a coefficient plot
+sjPlot::plot_model(mod1)
+```
+
+10.
+```{r}
+#Display model results in a prediction plot with observations
+plot1 <- ggeffects::ggpredict(mod1, terms = "weight")
+plot(plot1,
+        add.data = TRUE,
+        dot.alpha = .8,
+        jitter = .2)
+```
+
+11.
+```{r}
+#Example calculation
+sum(women$weight > 140) / length(women$weight)
+```
+
+This calculation is taking the number of women who weigh over 140 pounds, divided by the total number of women in the sample i.e. the proportion of women who weigh over 140 pounds.
+
+12.
+```{r}
+#Calculate proportion of women over the average weight
+mwgt <- mean(women$weight)
+sum(women$weight > mwgt) / length(women$weight)
+```
+46.67% of women weigh over the mean weight of women in this sample.
+
+13.
+```{r}
+#Set plot area to row of 3 graphs
+par(mfrow=c(1,3))
+#Plot histograms with varying break length
+hist(iris$Petal.Length,
+    main="Histogram of Iris Petal Length",
+    xlab="Petal Length")
+hist(iris$Petal.Length,
+    main="Histogram of Iris Petal Length",
+    xlab="Petal Length",
+    breaks=seq(1,7,2))
+hist(iris$Petal.Length,
+    main="Histogram of Iris Petal Length",
+    xlab="Petal Length",
+    breaks=seq(1,7,0.2))
+```
+
+Histogram breaks determine the size and number of bins, or columns in which data is displayed. Too few bins and interesting points within the distribution will be lost; too many bins will result in noisy, meaningless data.
+
+14.
+```{r}
+#Identify coding error
+mh <- mean(women$height)
+sum(women$weight > mh) / length(women$height)
+```
+This code has the height variable mis-typed. It is attempting to sum the weight of women with weights greater than the mean height. The two different scales mean that all women have weights greater than the mean height.
+
+15.
+```{r}
+#Transpose and rename dataframe columns
+women2 <- data.frame(women[,c(2,1)])
+names(women2)[] <- c("w","h")
+str(women2)
+```
+
+16.
+```{r}
+#Read data
+library(readr)
+testdata <- readr::read_csv(url("https://raw.githubusercontent.com/go-bayes/psych-447/main/data/testdata1.csv"))
+str(testdata)
+
+#Save data
+library(here)
+saveRDS(testdata, here::here("_posts/2021-03-06-workbook2/workbook2_files", "td.RDS"))
+
+td <- readRDS(here::here("_posts/2021-03-06-workbook2/workbook2_files", "td.RDS"))
+str(td)
+
+#Run linear regression model of height by weight
+mod2 <- lm(height ~ weight, data = td)
+summary(mod2)
+
+#Display model results in a coefficient plot
+sjPlot::plot_model(mod2)
+
+#Display model results in a prediction plot with observations
+plot2 <- ggeffects::ggpredict(mod2, terms = "weight")
+plot(plot2,
+        add.data = TRUE,
+        dot.alpha = .8,
+        jitter = .2)
+```
+
+The intercept represents the predicted value of height when weight is zero. Here, the intercept is nonsensical as it would mean a height of 12.7cm given a weight of 0kg, which is generally not possible unless you are in space.

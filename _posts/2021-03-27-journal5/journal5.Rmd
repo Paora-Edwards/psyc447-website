@@ -1,0 +1,23 @@
+---
+title: "Journal 5"
+description: |
+  Linear models
+author:
+  - name: Paul Edwards
+date: 03-27-21
+output:
+  distill::distill_article:
+    self_contained: false
+    fig_caption: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60), tidy=TRUE, echo = TRUE)
+```
+
+I'm quite pleased with how things turned out in this week's workbook. Although the assessment was intended to be a lighter workload than last week's, this actually provided more opportunity to try out different code to see what would be more efficient or give tidier output. For example, the instructions to simply print a table and a graph allowed me to test out the `kbl()` function and its arguments. I did however struggle with formatting the table output to APA standards e.g. italicising column labels.
+
+I also tried using inline call functions to pull statistics directly into my written analysis. I believe this will save a lot of time going forward, as it means I can create template reports before conducting analysis of the dataset.
+
+My primary concern at this stage is preparation for the final report assessment. I would like to simulate data for my 489 project which is still in the data collection phase. My research question is whether prototypicality of group membership moderates the effect of perceived discrimination on ethnic identity in Māori (i.e. the rejection-identification model). As such, I am not sure how to best simulate data where there are two expected groups of high and low prototypicality participants who may or may not differ in the strength of linear relationship between discrimination and identity. If this is not possible, I would also be open to conducting the same type of moderation analysis on another dataset so that at least I will have the correct code to use for my 489.

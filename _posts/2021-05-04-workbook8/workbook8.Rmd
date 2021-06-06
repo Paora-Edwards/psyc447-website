@@ -1,0 +1,191 @@
+---
+title: "Workbook 8"
+description: |
+  Generalised linear models
+author:
+  - name: Paul Edwards
+date: 05-04-21
+output:
+  distill::distill_article:
+    self_contained: false
+    fig_caption: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE, warning=FALSE, message=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library("tidyverse")
+library("patchwork")
+library("lubridate")
+library("kableExtra")
+library("gtsummary")
+library("lubridate")
+library("reshape2")
+library("ggraph")
+library("correlation")
+library("ggeffects")
+library("qqplotr")
+library("performance")
+library("brms")
+library("tidyLPA")
+
+#Read data
+nz_0 <- as.data.frame(readr::read_csv2(
+  url(
+    "https://raw.githubusercontent.com/go-bayes/psych-447/main/data/nzj.csv"
+  )
+))
+
+
+#Re-level Kessler 6 variables
+f <-
+  c(
+    "None Of The Time",
+    "A Little Of The Time",
+    "Some Of The Time",
+    "Most Of The Time",
+    "All Of The Time"
+  )
+
+#Re-shape data
+nz_1 <- nz_0 %>%
+  dplyr::mutate_if(is.character, factor) %>%
+  select(
+    -c(
+      SWB.Kessler01,
+      SWB.Kessler02,
+      SWB.Kessler03,
+      SWB.Kessler04,
+      SWB.Kessler05,
+      SWB.Kessler06
+    )
+  ) %>%
+  dplyr::mutate(Wave = as.factor(Wave)) %>%
+  mutate(FeelHopeless = forcats::fct_relevel(FeelHopeless, f)) %>%
+  mutate(FeelDepressed = forcats::fct_relevel(FeelDepressed, f)) %>%
+  mutate(FeelRestless = forcats::fct_relevel(FeelRestless, f)) %>%
+  mutate(EverythingIsEffort = forcats::fct_relevel(EverythingIsEffort, f)) %>%
+  mutate(FeelWorthless = forcats::fct_relevel(FeelWorthless, f)) %>%
+  mutate(FeelNervous = forcats::fct_relevel(FeelNervous, f)) %>%
+  dplyr::mutate(Wave = as.factor(Wave)) %>%
+  dplyr::mutate(male_id = as.factor(Male)) %>%
+  dplyr::mutate(date = make_date(year = 2009, month = 6, day = 30) + TSCORE)%>%
+  dplyr::filter(Wave == 2018)
+```
+
+
+```{r}
+#Centre and scale continuous predictors
+nz_1['Household.INC_s'] <- as.data.frame(scale(nz_1$Household.INC))
+nz_1['Age'] <- as.data.frame(scale(nz_1$Age))
+
+#Generate logistic regression model
+mod1 <- glm(Believe.Spirit ~ Gender + Age + Household.INC_s,
+            data = nz_1,
+            family = "binomial")
+
+#Plot model output
+stats1 <- parameters::model_parameters(mod1)
+print_md(stats1)
+plot(stats1)
+
+#Write model equation with coefficients
+eq1 <- equatiomatic::extract_eq(mod1, use_coefs = TRUE)
+int1 <- plogis(coef(mod1)[[1]])
+
+#Plot predicted values
+plot(ggeffects::ggpredict(mod1, terms = c("Gender", "Age", "Household.INC_s")), add.data = TRUE, alpha =.1) +
+  scale_y_continuous(limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1))
+
+#Check model fit
+check1 <- performance::check_model(mod1)
+check1
+```
+
+We fitted a logistic model (estimated using ML) to predict belief in spirit or a life-force with gender, age and household income. Here, the linear model `r eq1` has an intercept of `r round(stats1[1,2], digits = 2)` which, when used to examine the cumulative density of the logistic distribution, gives an `r round(int1*100, digits = 1)`% probability that males of intermediate age and income believe in spirits or a life-force.
+
+Gender is an important predictor of spirit belief (beta = `r round(stats1[2,2], digits = 2)`, 95% CI [`r round(stats1[2,5], digits = 2)`, `r round(stats1[2,6], digits = 2)`], *p* `r scales::pvalue(stats1[2,9])`). Women are more likely to believe in spirits than men, even when accounting for age and household income. Alongside possible biological factors, there may be an effect of gender socialisation at play that lead to greater religious thinking among women.
+
+Age is also an important predictor of spirit belief (beta = `r round(stats1[3,2], digits = 2)`, 95% CI [`r round(stats1[3,5], digits = 2)`, `r round(stats1[3,6], digits = 2)`], *p* `r scales::pvalue(stats1[3,9])`). Older people are more likely to believe in spirits than younger people, even when accounting for gender and household income. This could potentially be a result of a generational effect e.g. decreasing religiosity among younger generations, or an individual effect e.g. people develop beliefs in spirits as they get older, perhaps in response to growing mortality.
+
+Finally, household income is an important predictor of spirit belief (beta = `r round(stats1[4,2], digits = 2)`, 95% CI [`r round(stats1[4,5], digits = 2)`, `r round(stats1[4,6], digits = 2)`], *p* `r scales::pvalue(stats1[4,9])`). Those living in households with higher income are more likely to believe in spirits than those in households with lower income, even when accounting for gender and age. Spirituality may impact on behaviours that are linked to higher income earners such as religion-based work ethic and material reward.
+
+```{r}
+#Generate poisson regression model
+mod2 <- glm(CharityDonate ~ Gender + Age + Household.INC_s,
+            data = nz_1,
+            family = "poisson")
+
+#Plot model output
+stats2 <- parameters::model_parameters(mod2)
+print_md(stats2)
+plot(stats2)
+
+#Write model equation with coefficients
+eq2 <- equatiomatic::extract_eq(mod2, use_coefs = TRUE)
+
+#Plot predicted values
+plot(ggeffects::ggpredict(mod2, terms = c("Gender", "Age", "Household.INC_s")), add.data = TRUE, alpha =.1) +
+  scale_y_continuous(limits = c(0, 1)) +
+  scale_x_continuous(limits = c(0, 1))
+
+#Check model fit
+check2 <- performance::check_model(mod2)
+check2
+
+#Check zero inflation and overdispersion
+check3 <- check_zeroinflation(mod2)
+check3
+check4 <- check_overdispersion(mod2)
+check4
+```
+
+Next, we fitted a poisson model (estimated using ML) to predict charitable donations with gender, age and household income. Here, the linear model `r eq2` has an intercept of `r round(stats2[1,2], digits = 2)` which indicates the log of the expected donation amount in the last year ($`r round(exp(stats2[1,2]), digits = 2)`) for males of intermediate age and income.
+
+Gender is an important predictor of charitable donations (beta = `r round(stats2[2,2], digits = 2)`, 95% CI [`r round(stats2[2,5], digits = 2)`, `r round(stats2[2,6], digits = 2)`], *p* `r scales::pvalue(stats2[2,9])`). Women donate more than men, even when accounting for age and household income. This may reflect gender socialisation factors such as an expectation to care for others.
+
+Age is also an important predictor of charitable donations (beta = `r round(stats2[3,2], digits = 2)`, 95% CI [`r round(stats2[3,5], digits = 2)`, `r round(stats2[3,6], digits = 2)`], *p* `r scales::pvalue(stats2[3,9])`). Older people donate more than younger people, even when accounting for gender and household income. This could potentially be a result of a generational effect e.g. decreasing generosity to strangers among younger generations, or an individual effect e.g. increased discretionary income among older people.
+
+Finally, household income is an important predictor of charitable donations (beta = `r round(stats2[4,2], digits = 2)`, 95% CI [`r round(stats2[4,5], digits = 2)`, `r round(stats2[4,6], digits = 2)`], *p* `r scales::pvalue(stats2[4,9])`). Those living in households with higher income donate more than those in households with lower income, even when accounting for gender and age. This seems to be fairly self-explpanatory, with higher income households having greater discretionary income to spend on charitable donations.
+
+Checking our model fit, we find that there is evidence of zero-inflation and overdispersion in the model. We will therefore compare the Poisson regression model with a zero-inflated Poisson regression model to see which is the better fit.
+
+```{r}
+#Set Charity Donation variable to integer
+nz_1$CharityDonate <- as.integer(nz_1$CharityDonate)
+
+#Generate zero-inflated poisson regression model
+#brms::brm(CharityDonate ~ Gender + Age + Household.INC_s,
+#                   family = "zero_inflated_poisson",
+#                   file = here::here("data", "zeroinflated_poisson_donate"),
+#                   data = nz_1)
+bmod1 <- readRDS("zeroinflated_poisson_donate.rds")
+stats3 <- summary(bmod1)
+stats3
+
+#Plot predicted values from posterior samples
+plot(
+  conditional_effects(
+    bmod1,
+    spaghetti = TRUE,
+    nsamples = 100,
+    select_points = 0.1
+  ),
+  points = TRUE,
+  point_args = list(alpha = 0.1,
+                    width = .02)
+)
+
+#Zero-inflated poisson model posterior predictive check
+brms::pp_check(bmod1) + xlim(0, 5)
+
+#Compare models
+#b0 <- add_criterion(mod2, "loo")
+#b1 <- add_criterion(bmod1, "loo")
+#w <- loo_compare(b0, b1, criterion = "loo")
+#w
+#cbind(waic_diff = w[, 1] * -2,
+#      se        = w[, 2] * 2)
+```

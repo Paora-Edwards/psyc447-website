@@ -1,0 +1,21 @@
+---
+title: "Journal 8"
+description: |
+  Generalised linear models
+author:
+  - name: Paul Edwards
+date: 05-04-21
+output:
+  distill::distill_article:
+    self_contained: false
+    fig_caption: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60), tidy=TRUE, echo = TRUE)
+```
+
+I have found the last few weeks' workbooks to be more challenging to complete, as there is less specificity around what steps to take to produce models and interpret their fit. I have felt quite lost as to what analysis steps I need to take. I would prefer that there were some questions outlining specific variables of interest, what models to test, and what types of plots are useful to examine. Then, perhaps there could be one question where the analysis is free choice. This would reduce uncertainty about what to include in the workbook answers.
+
+This was the first time I have produced Bayesian regression models. I was unable to compare the mdoel fit for a Poisson general linear model, and a Bayesian zero-inflated Poisson regression model. I was also unsure how to report on the output of this analysis, despite the lecture section on reporting. Although I have been keeping up in previous lectures, it felt like there was significantly more content to learn this week than before.

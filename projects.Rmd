@@ -2,7 +2,19 @@
 title: "Projects"
 site: distill::distill_website
 listing:
-  posts: 2021-05-18-workbook10
+  posts:
+  - 2021-06-07-finalproject
+  - 2021-02-21-workbook1
+  - 2021-03-06-workbook2
+  - 2021-03-13-workbook3
+  - 2021-03-20-workbook4
+  - 2021-03-27-workbook5
+  - 2021-04-20-workbook6
+  - 2021-04-27-workbook7
+  - 2021-05-04-workbook8
+  - 2021-05-11-workbook9
+  - 2021-05-18-workbook10
+  - 2021-05-25-workbook11
 ---
 
 ```{r setup, include=FALSE}
