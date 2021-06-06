@@ -3,6 +3,10 @@ title: "Journals"
 site: distill::distill_website
 listing:
   posts:
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> d6cd60d30126cd8d83524678b92dfc6f4d2a1e22
   - 2021-02-21-journal1
   - 2021-03-06-journal2
   - 2021-03-13-journal3
@@ -14,6 +18,22 @@ listing:
   - 2021-05-11-journal9
   - 2021-05-18-journal10
   - 2021-05-25-journal11
+<<<<<<< HEAD
+=======
+=======
+    - 2021-02-21-journal1
+    - 2021-03-06-journal2
+    - 2021-03-13-journal3
+    - 2021-03-20-journal4
+    - 2021-03-27-journal5
+    - 2021-04-20-journal6
+    - 2021-04-27-journal7
+    - 2021-05-04-journal8
+    - 2021-05-11-journal9
+    - 2021-05-18-journal10
+    - 2021-05-25-journal11
+>>>>>>> eb5af2de0acf656b5cae988d04884f632db2a5b4
+>>>>>>> d6cd60d30126cd8d83524678b92dfc6f4d2a1e22
 ---
 
 ```{r setup, include=FALSE}
