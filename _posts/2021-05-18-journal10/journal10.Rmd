@@ -1,0 +1,23 @@
+---
+title: "Journal 10"
+description: |
+  Distilling code into webpages
+author:
+  - name: Paul Edwards
+date: 05-18-21
+output:
+  distill::distill_article:
+    self_contained: false
+    fig_caption: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60), tidy=TRUE, echo = TRUE)
+```
+
+I have published my Distill website [here](https://paora-edwards.github.io/psyc447-website/docs/index.html)
+
+At first I couldn't get the index webpage to update with changes. I later realised that I needed to update `_yml` file directly rather than `index.html`. I've found this Distill platform to be very easy to use.
+
+I still don't quite get the different model equations for varying slopes and intercepts, and the difference between them. I'll hopefully work on this some more as I feel this is very useful for my intended moderation in my final report.

@@ -6,6 +6,14 @@ listing:
     - 2021-02-21-journal1
     - 2021-03-06-journal2
     - 2021-03-13-journal3
+    - 2021-03-20-journal4
+    - 2021-03-27-journal5
+    - 2021-04-20-journal6
+    - 2021-04-27-journal7
+    - 2021-05-04-journal8
+    - 2021-05-11-journal9
+    - 2021-05-18-journal10
+    - 2021-05-25-journal11
 ---
 
 ```{r setup, include=FALSE}

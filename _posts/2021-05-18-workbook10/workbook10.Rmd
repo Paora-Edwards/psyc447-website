@@ -1,7 +1,7 @@
 ---
 title: "Workbook 10"
 description: |
-  Mixed models: Random slopes and intercepts.
+  Mixed models: Random slopes and intercepts
 author:
   - name: Paul Edwards
 date: 05-18-21
@@ -144,7 +144,7 @@ For fun, we will also run a Bayesian model of the same parameters, with no prior
 #            data = nz_1,
 #            family = gaussian
 #            )
-mod2 <- readRDS("../data/multilevel-var-slopes-no-prior.rds")
+mod2 <- readRDS("multilevel-var-slopes-no-prior.rds")
 
 #Display model table
 tab2 <- sjPlot::tab_model(mod2)

@@ -1,0 +1,23 @@
+---
+title: "Journal 4"
+description: |
+  Bringing it all together
+author:
+  - name: Paul Edwards
+date: 03-20-21
+output:
+  distill::distill_article:
+    self_contained: false
+    fig_caption: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60), tidy=TRUE, echo = TRUE)
+```
+
+Unfortunately I was unable to attend the lecture and workshop this week, so I am not sure if I missed important information about how to approach the workbook questions. It seemed to take me longer this week to get my code working correctly than in previous weeks; however this could perhaps just be the standard progression of difficulty across the trimester as we build upon earlier skills.
+
+I had some challenges with questions 2, 3 and 4. I knew theoretically how to find the required answer, but my goal was to try to generate the answer in one piped workflow. This took more time than it might otherwise have done, especially as I have not used piping extensively before. I kept getting errors about particular variables not being available, as I'd not selected them at the start of the pipeline. I also did not fully understand why I could get some functions to work fine outside of a piped workflow, but wouldn't work similarly inside a pipe. I will need to do more study to find out how and why the functions are coded differently when piping them.
+
+Despite these challenges, I offered what tips I did gain in the PSYC447 Q&A Padlet. These might have appeared obvious to other students, but someone may find them useful nonetheless. Hopefully these were descriptive enough that someone else could follow the same approach I took, while still requiring the reader to actively seek understanding of each function in order to code it properly. I believe this is most beneficial for learning to code R.

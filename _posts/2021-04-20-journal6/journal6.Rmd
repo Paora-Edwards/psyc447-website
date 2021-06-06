@@ -1,0 +1,21 @@
+---
+title: "Journal 6"
+description: |
+  Reporting success
+author:
+  - name: Paul Edwards
+date: 04-20-21
+output:
+  distill::distill_article:
+    self_contained: false
+    fig_caption: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60), tidy=TRUE, echo = TRUE)
+```
+
+I opted to write my report introduction using `Papaja`. I was largely successful at using the citation skills from the first assignment, however I was unable to seperate out the `R` package references from appearing in the reference list. I am unsure whether it is accepted APA practice to include technical references i.e. programmes in a separate list. For this reason it looks slightly messy!
+
+I would like to better understand how to integrate tables and graphs within `Papaja`. Some of the preliminary data findings could have been better represented  in this way. However, I had difficulty using the `Kbl()` function as I had in my previous workbook. There must be `Papaja`-specific functions that enable these to work.

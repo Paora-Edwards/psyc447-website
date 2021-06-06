@@ -1,0 +1,18 @@
+---
+title: "Journal 9"
+description: |
+  Multi-level modelling
+author:
+  - name: Paul Edwards
+date: 05-11-21
+output:
+  distill::distill_article:
+    self_contained: false
+    fig_caption: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60), tidy=TRUE, echo = TRUE)
+```
+

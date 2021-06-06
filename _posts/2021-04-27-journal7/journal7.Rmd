@@ -1,0 +1,19 @@
+---
+title: "Journal 7"
+description: |
+  Other types of modelling
+author:
+  - name: Paul Edwards
+date: 04-27-21
+output:
+  distill::distill_article:
+    self_contained: false
+    fig_caption: yes
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60), tidy=TRUE, echo = TRUE)
+```
+
+This week covered a whole range of statistical models, including ordinal responses and predictors, random intercept models, multivariate models and mediation.
