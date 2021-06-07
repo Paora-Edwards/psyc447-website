@@ -9,6 +9,7 @@ output:
   distill::distill_article:
     self_contained: false
     fig_caption: yes
+    code_folding: 'Show code'
 urlcolor: blue
 csl: apa_7th.csl
 bibliography: finalreport.bib
@@ -22,10 +23,15 @@ library(tidyverse)
 library(lubridate)
 library(table1)
 library(modelsummary)
+library(reshape2)
 library(correlation)
 library(ggraph)
 library(patchwork)
 library(kableExtra)
+library(psych)
+library(interactions)
+library(sandwich)
+library(broom)
 
 #Read data
 nz <- readr::read_csv("NZAVS4.csv")
@@ -35,23 +41,28 @@ nz_1 <- nz %>%
   dplyr::mutate(Gender = as.factor(Gender.T04)) %>%
   mutate(Gender = forcats::fct_relevel(Gender, c("Male",
                                                  "Female"))) %>%
-  dplyr::mutate(Religious = as.factor(Religious.T04)) %>%
-  mutate(Religious = forcats::fct_relevel(Religious, c("Non-religious",
-                                                       "Religious"))) %>%
-  dplyr::mutate(Religious_ID = as.factor(Religion.Identification.T04)) %>%
-  mutate(Religious_ID = forcats::fct_relevel(Religious_ID, c("Buddhism",
-                                                            "Christianity",
-                                                            "Hinduism",
-                                                            "Islam",
-                                                            "Judaism",
-                                                            "Māori Christianity",
-                                                            "New Age"))) %>%
   dplyr::mutate(Age = Age.at.T04) %>%
   dplyr::mutate(Discrimination = Perc.Discrim.T04) %>%
   dplyr::mutate(Prototypicality = T4.MAORI.VEM) %>%
   dplyr::mutate(Ethnic_ID = T4.MAORI.GME) %>%
-  select(Age, Gender, Religious, Religious_ID, Discrimination, Prototypicality, Ethnic_ID)
+  select(Age, Gender, Discrimination, Prototypicality, Ethnic_ID)
+```
 
+# Does prototypicality of group membership moderate the effect of intergroup and intragroup discrimination on ethnic identity in Māori?
+
+Māori culture has been posited [e.g. by @durie-1998; @durie-2001] as a protective factor for psychological wellbeing. Strengthening cultural/ethnic identity may be a means to addessing disparities in health, education and other contexts. However, not all people who identify as having whakapapa Māori (Māori ancestry) have the access, means or desire to adopt a traditional, “fixed” Māori identity [@mcintosh-2005]. In this project I will examine the heterogeneity of Māori cultural/ethnic identity formation through participants’ experiences of discrimination by Pākehā/Tauiwi and Māori.
+
+Branscombe, Schmitt and Harvey’s [-@branscombe-1999] rejection-identification model proposes that perceived discrimination by the dominant group leads to strengthened ingroup identification, as a defense mechanism to protect the individual’s psychological wellbeing. Evidence for this model is mixed with some studies showing increased ethnic identity while others do not [@romero-2003; @masuoka-2006; @chavez-2007; @perez-2008; @evans-2014]. One explanation for these mixed results may be that some individuals are more or less able to traverse boundaries of group category membership because of how prototypical they appear or behave. Evidence suggests that self-rated similarity to the average ingroup member mediates the relationship between perceived discrimination and life satisfaction [@giamo-2012]. However, research to date has not examined the effect of group membership prototypicality on the relationship between perceived discrimination and ethnic identity. If highly prototypical group members are less able than low prototypicality members to distance themselves from the group category for which they are being targeted for discrimination, then they may have more reason to defend whatever limited identity choices are available to them.
+
+I want to explore whether the diversity of participants’ self-rated prototypicality to the group category ‘Māori’ based on physical, cultural and social characteristics affects how discrimination experiences are rejected or internalised through strengthened or decreased identification as Māori. That is, whether prototypicality of group membership moderates the effect of perceived discrimination on Māori identity.
+
+# Method
+
+## Participants
+
+Participants were 669 members of the community who identified as Māori (62.9% female, 37.1% male; Mean~age~=44.4, SD~age~=13) recruited through the New Zealand Attitudes and Values Survey.
+
+```{r}
 #Present means and standard deviations for demographics in a table
 stats1 <- nz_1 %>%
   summarise(
@@ -66,9 +77,11 @@ tab1 <- stats1 %>%
       ) %>%
   kable_classic_2(c("striped", "hover"), full_width = TRUE)
 tab1
+```
 
+```{r}
 stats2 <- nz_1 %>%
-  select(Gender, Religious, Religious_ID) %>%
+  select(Gender) %>%
   filter(!is.na(Gender)) %>%
   group_by(Gender) %>%
   summarise("n" = n())
@@ -79,7 +92,34 @@ tab2 <- stats2 %>%
       ) %>%
   kable_classic_2(c("striped", "hover"), full_width = TRUE)
 tab2
+```
 
+## Material
+
+Participants completed a range of demographic questions and construct scales. The constructs used in the current study are included below.
+
+**Perceived discrimination.** Participants were asked to evaluate the single item, "I feel that I am often discriminated against because of my ethnicity" on a scale from 1 (Strongly Disagree) to 7 (Strongly Agree).
+
+**Perceived appearance.** This subscale of Houkamau and Sibley's [-@houkamau-2015] MMM-ICE2 examines self-rated prototypicality of physical appearance to the Māori ethnic group. Seven items including "I think it is easy to tell that I am Māori just by looking at me" and "People would never know that I am of Māori descent just by looking at me" are rated on a scale from 1 (Strongly Disagree) to 7 (Strongly Agree).
+
+**Group membership and evaluation.** Another subscale of the MMM-ICE2 examines affective and centrality components of ethnic group membership (i.e. identity). Eight items including "I love the fact I am Māori" and "My Māori ancestry is important to me" are rated on a scale from 1 (Strongly Disagree) to 7 (Strongly Agree).
+
+## Procedure
+
+Participants were posted a copy of the questionnaire, with a second postal follow-up two months later. Participants who provided an email address were also emailed and invited to complete an online version if they preferred.
+
+To boost sample size and increase sample diversity for subsequent waves, booster samples using different sample frames were conducted. Booster sampling was conducted without replacement (i.e., all people included in previous sample frames were identified and removed from the electoral roll before generation of the new sample frames).
+
+The fifth sample frame consisted of 9,000 people randomly selected from those who indicated on the 2012 Electoral Roll that they were of Māori ethnicity (ethnic affiliation as Māori is listed on the roll, but other ethnic affiliations are not). A total of 689 participants responded to this booster sample (adjusted response rate = 7.78%). The questionnaire administered to the Māori booster sample included questions specifically designed for Māori.
+
+## Data analysis
+We used R [Version 4.0.4; @R-base] for all our analyses.
+
+# Results
+
+Means and standard deviations are listed in Table 3. Correlations between variables were roughly linear and not overly strong, indicating that multicollinearity is unlikely to be an issue. The underlying probability densities for discrimination and ethnic identity are skewed, suggesting that data transformation would be appropriate before conducting a linear regression model.
+
+```{r}
 #Present means and standard deviations for scale variables in a table
 stats3 <- nz_1 %>%
   select(Gender, Discrimination, Prototypicality, Ethnic_ID) %>%
@@ -135,53 +175,133 @@ plot3 <- ggplot(nz_1, aes(y = Ethnic_ID)) +
   ylab("Ethnic Identity")
 
 #Combine boxplots into one figure
-plot1 + plot2 + plot3 +
+plot4 <- plot1 + plot2 + plot3 +
   plot_annotation(title = "Participants' scale responses in NZAVS 2012 wave",
                   tag_levels = 'a')
+plot4
+
+#Run correlation matrix with density plots
+psych::pairs.panels(nz_1[c(3:5)], method="spearman",
+density=TRUE, ellipses = FALSE)
+
+#Log transform skewed variables
+nz_1$Discrimination_log <- log(1 + nz_1$Discrimination)
+nz_1$Ethnic_ID_log <- log(max(1 + nz_1$Ethnic_ID) - nz_1$Ethnic_ID)
 ```
 
-# Does prototypicality of group membership moderate the effect of intergroup and intragroup discrimination on ethnic identity in Māori?
+Discrimination and prototypicality scores were mean-centred to reduce multicollinearity and improve interpretability.
 
-Māori culture has been posited [e.g. by @durie-1998; @durie-2001] as a protective factor for psychological wellbeing. Strengthening cultural/ethnic identity may be a means to addessing disparities in health, education and other contexts. However, not all people who identify as having whakapapa Māori (Māori ancestry) have the access, means or desire to adopt a traditional, “fixed” Māori identity [@mcintosh-2005]. In this project I will examine the heterogeneity of Māori cultural/ethnic identity formation through participants’ experiences of discrimination by Pākehā/Tauiwi and Māori.
+```{r}
+#Mean centre predictor and moderator variables
+nz_1$Discrimination_c <- c(scale(nz_1$Discrimination, center=TRUE, scale=FALSE))
+nz_1$Discrimination_clog <- c(scale(nz_1$Discrimination_log, center=TRUE, scale=FALSE))
+nz_1$Prototypicality_c <- c(scale(nz_1$Prototypicality, center=TRUE, scale=FALSE))
 
-Branscombe, Schmitt and Harvey’s [-@branscombe-1999] rejection-identification model proposes that perceived discrimination by the dominant group leads to strengthened ingroup identification, as a defense mechanism to protect the individual’s psychological wellbeing. Evidence for this model is mixed with some studies showing increased ethnic identity while others do not [@romero-2003; @masuoka-2006; @chavez-2007; @perez-2008; @evans-2014]. One explanation for these mixed results may be that some individuals are more or less able to traverse boundaries of group category membership because of how prototypical they appear or behave. Evidence suggests that self-rated similarity to the average ingroup member mediates the relationship between perceived discrimination and life satisfaction [giamo-2012]. However, research to date has not examined the effect of group membership prototypicality on the relationship between perceived discrimination and ethnic identity. If highly prototypical group members are less able than low prototypicality members to distance themselves from the group category for which they are being targeted for discrimination, then they may have more reason to defend whatever limited identity choices are available to them.
+#Run linear regression model
+mod1 <- lm(Ethnic_ID_log ~ Discrimination_clog*Prototypicality_c, data=nz_1)
+tab4 <- parameters::model_parameters(mod1) %>%
+  select(Parameter, Coefficient, SE, CI_low, CI_high, p) %>%
+  dplyr::mutate(p = scales::pvalue(p)) %>%
+  kbl(caption = "Participants' responses by gender in NZAVS 2012 wave",
+      col.names = c("Predictors",
+                    "Estimates",
+                    "SE",
+                    "CI low",
+                    "CI high",
+                    "p-value"),
+      align = c("r", "r", "r", "r", "r", "r"),
+      digits = 2
+      ) %>%
+  kable_classic_2(c("striped", "hover"), full_width = TRUE)
+tab4
 
-I want to explore whether the diversity of participants’ self-rated prototypicality to the group category ‘Māori’ based on physical, cultural and social characteristics affects how discrimination experiences are rejected or internalised through strengthened or decreased identification as Māori. The main research questions are:
+#Generate model equation
+eq1 <- equatiomatic::extract_eq(mod1,  use_coefs = TRUE)
+```
 
-*	Does prototypicality of group membership moderate the effect of perceived discrimination by Pākehā/Tauiwi, on Māori identity?
-*	Does prototypicality of group membership moderate the effect of perceived discrimination by Māori, on Māori identity?
+A linear regression model with an interaction term of discrimination and prototypicality was run. The interaction was statistically significant ($\beta$ = `r round(parameters::model_parameters(mod1)[4,2], digits = 2)`, *p* = `r scales::pvalue(parameters::model_parameters(mod1)[4,9])`) with the resulting coefficient form:
 
-# Method
+`r eq1`
 
-## Participants
+```{r}
+#Assess linear model assumptions
+par(mfrow=c(2,2), pin=c(2,1))
+plot5 <- plot(mod1)
+plot5
+```
 
-Participants were 669 members of the community who identified as Māori (62.9% female, 37.1% male; Mean~age~=44.4, SD~age~=13) recruited through the New Zealand Attitudes and Values Survey.
+Residual plots indicate that the linear model assumptions were reasonably met, with rough approximation to normality and homoscedasticity. However, there is still evidence of skewness suggesting that perhaps a Gamma distribution model may be more appropriate.
 
-## Material
+```{r}
+#Run generalised linear regression models
+mod2 <- glm(Ethnic_ID ~ Discrimination_c * Prototypicality_c,
+            data=nz_1,
+            family = "gaussian")
+mod3 <- glm(Ethnic_ID ~ Discrimination_c * Prototypicality_c,
+            data=nz_1,
+            family = "Gamma")
 
-Participants completed a range of demographic questions and construct scales. The constructs used in the current study are included below.
+#Compare models
+modcomp <- performance::compare_performance(mod2,
+                                            mod3)
+modcomp
+plot6 <- plot(modcomp)
+plot6
+```
 
-**Perceived discrimination.** Participants were asked to evaluate the single item, "I feel that I am often discriminated against because of my ethnicity" on a scale from 1 (Strongly Disagree) to 7 (Strongly Agree).
+After comparing the two models, the Gaussian distribution model appeared to be the better fit for the data. AIC, BIC and RMSE were each smaller for the Gaussian model, while only the Sigma value was smaller for the Gamma model. The data sufficiently approximated a normal distribution such that a Gaussian model was appropriate for further analysis.
 
-**Perceived appearance.** This subscale of Houkamau and Sibley's [-@houkamau-2015] MMM-ICE2 examines self-rated prototypicality of physical appearance to the Māori ethnic group. Seven items including "I think it is easy to tell that I am Māori just by looking at me" and "People would never know that I am of Māori descent just by looking at me" are rated on a scale from 1 (Strongly Disagree) to 7 (Strongly Agree).
+To examine the effect of the moderating variable, an interaction plot with simple slopes table
 
-**Group membership and evaluation.** Another subscale of the MMM-ICE2 examines affective and centrality components of ethnic group membership (i.e. identity). Eight items including "I love the fact I am Māori" and "My Māori ancestry is important to me" are rated on a scale from 1 (Strongly Disagree) to 7 (Strongly Agree).
+```{r}
+#Create interaction plot
+plot7 <- interactions::interact_plot(mod2,
+                                     pred=Discrimination_c,
+                                     modx=Prototypicality_c,
+                                     data=nz_1,
+                                     plot.points=TRUE,
+                                     interval=TRUE,
+                                     jitter=0.2,
+                                     x.label="Discrimination",
+                                     y.label="Ethnic Identity",
+                                     legend.main="Prototypicality")
+plot7
 
-## Procedure
+#Calculate simple slopes
+stats4 <- interactions::sim_slopes(mod2,
+                                   pred=Discrimination_c,
+                                   modx=Prototypicality_c,
+                                   data=nz_1,
+                                   johnson_neyman = FALSE)
 
-Participants were posted a copy of the questionnaire, with a second postal follow-up two months later. Participants who provided an email address were also emailed and invited to complete an online version if they preferred.
+#Create simple slopes table
+tab5 <- stats4 %>%
+  tidy() %>%
+  select(term, estimate, std.error, p.value) %>%
+  kbl(caption = "Simple slopes by moderator level in NZAVS 2012 wave",
+      col.names = c("Moderator level",
+                    "Estimate",
+                    "SE",
+                    "P-value"),
+      align = c("r", "r", "r", "r", "r"),
+      digits = 2
+      ) %>%
+  kable_classic_2(c("striped", "hover"), full_width = TRUE)
+tab5
 
-To boost sample size and increase sample diversity for subsequent waves, booster samples using different sample frames were conducted. Booster sampling was conducted without replacement (i.e., all people included in previous sample frames were identified and removed from the electoral roll before generation of the new sample frames).
+#Create simple slopes plot
+plot8 <- plot(stats4)
+plot8
+```
 
-The fifth sample frame consisted of 9,000 people randomly selected from those who indicated on the 2012 Electoral Roll that they were of Māori ethnicity (ethnic affiliation as Māori is listed on the roll, but other ethnic affiliations are not). A total of 689 participants responded to this booster sample (adjusted response rate = 7.78%). The questionnaire administered to the Māori booster sample included questions specifically designed for Māori.
-
-## Data analysis
-R packages
-
-# Results
-
-
+The simple slope for the highest level of prototypicality is non-significant, indicating that highly prototypical group members do not experience changes in ethnic identity in relation to how much they perceive themselves to be discriminated against. In contrast, low prototypicality group members do have greater increases in ethnic identity in relation to perceived discrimination (simple slope = `r round(tidy(stats4)[1,1], digits = 2)`, *p* `r scales::pvalue(as.numeric(tidy(stats4)[1,4]))`).
 
 # Discussion
 
-Future studies
+The results of this moderation analysis confirmed the hypothesis. As expected, prototypicality of group membership moderated the effect of discrimination experiences on ethnic identification. However, the direction of these conditional effects reveal a more complex phenomenon than previous literature suggests. Highly prototypical group members had stable ethnic identification, such that higher levels of discrimination did not increase ethnic identification as proposed by Branscombe et al.'s [-@branscombe-1999] rejection-identification model. Instead, only low prototypicality group members demonstrated a positive association between perceived discrimination and ethnic identity. It may be that prototypicality affects ethnic identity development, with those who are more prototypical consolidating their ethnic identity earlier or more frequently throughout their lives.
+
+**A note on DAGs.** Causal inference was limited in the present study by the use of observational data. It would be unethical to expose participants to discrimination in an attempt to manipulate ethnic identification in a controlled manner. Thus, we were limited in our study approach.
+
+One method for clarifying causal relationships is through the use of Directed Acyclical Graphs (DAGs). DAGs map our theoretical assumptions about causal mechanisms such that we can better identify which variables should or should not be controlled for in statistical models. While DAGs were not originally designed to include interaction effects, there is growing support for developing DAGs which can account for these [@vanderweele-2007; @nilsson-2020].
+
+If we were to attempt to plot an interaction DAG, it is likely we would need to account for a possible backdoor path between prototypicality of group membership and experiences of discrimination. Participants who are more prototypical, especially with regards to immutable physical characteristics denoting race and ethnicity, are ostensibly more likely to be a target of discrimination than those who can pass as other races and ethnicities. A possible solution to this would be to use time series data and measure discrimination and ethnic identity at two or more time points through a daily/weekly diary design. We could then analyse this relationship as a multilevel model with time as a fixed effect.
